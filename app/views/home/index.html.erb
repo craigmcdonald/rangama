@@ -1,0 +1,29 @@
+<div>
+  <div>
+    <h1>Anagram Finder</h1>
+  </div>
+  <div>
+    <% if flash[:notice] %>
+      <div class="notice"><%= flash[:notice] %></div>
+    <% end %>
+  </div>
+  <div>
+    <%= form_tag({action: :upload}, multipart: true, :remote => true) do %>
+       <%= file_field_tag 'dictionary' %>
+       <%= submit_tag('load new dictionary') %>
+    <% end %>
+  </div>
+  <div>
+    <%= form_with(method: 'post', url: '/search', id: 'search') do %>
+      <%= label_tag(:q, "Enter a word to search for anagrams:") %>
+      <%= text_field_tag(:q) %>
+      <%= submit_tag("Go") %>
+    <% end %>
+  </div>
+  <ul>
+    <% previous_searches.each do |s| %>
+      <li><%= s %></li>
+    <% end %>
+  </ul>
+  <%= link_to 'clear searches', '/clear' %>
+</div>
