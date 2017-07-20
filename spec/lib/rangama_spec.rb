@@ -2,6 +2,13 @@ require 'rails_helper'
 
 describe Rangama::Dictionary do
 
+  describe 'invalid initialization' do
+    let(:dictionary) { described_class.new(nil,nil,true) }
+    it 'should raise an ArgumentError' do
+      expect { dictionary }.to raise_error(ArgumentError, 'Invalid argument(s)')
+    end
+  end
+
   describe 'working with a 3 word dictionary' do
     let(:io) { StringIO.new( %w{ cat dog bat }.join("\n")) }
     let(:dictionary) { described_class.new(io) }
@@ -63,6 +70,33 @@ describe Rangama::Dictionary do
 
       it "should return false for modified #{word}" do
         expect(dictionary.search(modified_word(word))).to_not be
+      end
+    end
+  end
+
+  describe 'working with a persisted 3 word dictionary' do
+    let(:uuid) { SecureRandom.uuid }
+    let(:io) { StringIO.new( %w{ cat dog bat }.join("\n")) }
+    let(:dictionary) { described_class.new(io,uuid,true) }
+    it 'should load the dictionary' do
+      expect(dictionary.dict).to eq(['cat', 'dog', 'bat'])
+    end
+
+    it 'should return true for cat' do
+      expect(dictionary.search('cat')).to be
+    end
+
+    describe 'returning to previously persisted 3 word dictionary' do
+      let(:new_dict) { described_class.new(nil,uuid)}
+
+      it 'should return true for cat' do
+        dictionary # instantiate the dictionary.
+        expect(new_dict.search('cat')).to be
+      end
+
+      it 'should return false for a different dictionary' do
+        error_dict = described_class.new(nil,SecureRandom.uuid)
+        expect(error_dict.search('cat')).to_not be
       end
     end
   end

@@ -1,0 +1,7 @@
+default:
+  host: localhost
+  port: 6379
+development:
+  namespace: rangama_dev
+test:
+  namespace: rangama_test

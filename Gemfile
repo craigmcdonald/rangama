@@ -5,6 +5,10 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
+# Persistent store for Dictionary
+gem 'redis-objects'
+gem 'redis-namespace'
+
 # Use Puma as the app server
 gem 'puma', '~> 3.7'
 gem 'sass-rails', '~> 5.0'
@@ -32,6 +36,7 @@ group :test do
   gem 'capybara'
   gem 'poltergeist'
   gem 'simplecov'
+  gem 'database_cleaner'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

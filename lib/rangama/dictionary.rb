@@ -1,10 +1,17 @@
 module Rangama
   class Dictionary
-    attr_reader :dict, :trie
+    attr_reader :dict, :trie, :uuid
 
-    def initialize(io)
-      @dict = load_dict(io)
-      @trie = build_trie
+    def initialize(io=nil,uuid=nil,persist=false)
+      @uuid = uuid if uuid
+      if io
+        @dict = load_dict(io)
+        load_trie(persist)
+      elsif uuid
+        @trie = Redis::HashKey.new(uuid)
+      else
+        raise ArgumentError.new('Invalid argument(s)')
+      end
     end
 
     def search(word,hash=trie)
@@ -19,6 +26,18 @@ module Rangama
       dict = io.readlines.map(&:chomp)
       io.close
       dict
+    end
+
+    def load_trie(persist)
+      tmp_trie, redis_hash = build_trie, nil
+      if persist
+        return raise ArgumentError.new("UUID is invalid") unless uuid
+        redis_hash = Redis::HashKey.new(uuid)
+        tmp_trie.keys.each do |key|
+          redis_hash[key] = tmp_trie[key]
+        end
+      end
+      @trie = redis_hash || tmp_trie
     end
 
     # TODO: Re-write this to use TCO.
