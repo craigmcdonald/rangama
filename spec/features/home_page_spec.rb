@@ -11,28 +11,35 @@ describe '/' do
   it { is_expected.to have_link('clear searches') }
   it { is_expected.to have_text('Anagram Finder') }
 
-  describe 'searching for an anagram' do
-    it 'should add the search term to the head of the list of previous searches' do
-      fill_in 'Enter a word to search for anagrams:', with: 'foo'
-      click_button 'Go'
-      expect(subject).to have_selector('ul > li:nth-child(1)', text: 'foo')
-      fill_in 'Enter a word to search for anagrams:', with: 'bar'
-      click_button 'Go'
-      expect(subject).to have_selector('ul > li:nth-child(1)', text: 'bar')
-      expect(subject).to have_selector('ul > li:nth-child(2)', text: 'foo')
+  describe 'with foo.txt dictionary' do
+
+    before do
+      attach_file 'dictionary', 'spec/assets/foo.txt'
+      click_button 'load new dictionary'
+    end
+
+    describe 'searching for an anagram' do
+      it 'should add the search term to the head of the list of previous searches' do
+        fill_in 'Enter a word to search for anagrams:', with: 'foo'
+        click_button 'Go'
+        expect(subject).to have_selector('ul > li:nth-child(1)', text: 'foo')
+        fill_in 'Enter a word to search for anagrams:', with: 'bar'
+        click_button 'Go'
+        expect(subject).to have_selector('ul > li:nth-child(1)', text: 'bar')
+        expect(subject).to have_selector('ul > li:nth-child(2)', text: 'foo')
+      end
+    end
+
+    describe 'clearing the search history' do
+      it 'should clear the list of previous searches' do
+        fill_in 'Enter a word to search for anagrams:', with: 'foo'
+        click_button 'Go'
+        expect(subject).to have_selector('ul > li:nth-child(1)', text: 'foo')
+        click_link 'clear searches'
+        expect(subject).to_not have_selector('ul > li:nth-child(1)', text: 'foo')
+      end
     end
   end
-
-  describe 'clearing the search history' do
-    it 'should clear the list of previous searches' do
-      fill_in 'Enter a word to search for anagrams:', with: 'foo'
-      click_button 'Go'
-      expect(subject).to have_selector('ul > li:nth-child(1)', text: 'foo')
-      click_link 'clear searches'
-      expect(subject).to_not have_selector('ul > li:nth-child(1)', text: 'foo')
-    end
-  end
-
 
   describe 'uploading a dictionary' do
     it 'should return a success message when a file is uploaded' do

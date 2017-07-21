@@ -10,15 +10,18 @@ class HomeController < ApplicationController
   end
 
   def upload
-    msg = params[:dictionary].present? ?
-      'dictionary uploaded successfully' :
+    start = Time.now
+    msg = if params[:dictionary].present? && helpers.upload_dictionary
+      'dictionary uploaded successfully'
+    else
       'please select a valid file'
-    redirect_to root_path, notice: msg
+    end
+    finish = Time.now
+    redirect_to root_path, notice: "#{msg} (#{helpers.time_taken(start,finish)}ms)"
   end
 
   def clear
     helpers.clear_searches
     redirect_to root_path
   end
-
 end

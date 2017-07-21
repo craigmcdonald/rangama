@@ -1,13 +1,6 @@
 require 'rails_helper'
 
-describe Rangama::Dictionary do
-
-  describe 'invalid initialization' do
-    let(:dictionary) { described_class.new(nil,nil,true) }
-    it 'should raise an ArgumentError' do
-      expect { dictionary }.to raise_error(ArgumentError, 'Invalid argument(s)')
-    end
-  end
+describe Rangama::SortedDictionary do
 
   describe 'working with a 3 word dictionary' do
     let(:io) { StringIO.new( %w{ cat dog bat }.join("\n")) }
@@ -16,30 +9,30 @@ describe Rangama::Dictionary do
       expect(dictionary.dict).to eq(['cat', 'dog', 'bat'])
     end
 
-    it 'should load the trie' do
-      expect(dictionary.trie).to be_kind_of(Hash)
-      expect(dictionary.trie).to have_key('c')
+    it 'should load the data_structure' do
+      expect(dictionary.data_structure).to be_kind_of(Hash)
+      expect(dictionary.data_structure).to have_key('act')
     end
 
     it 'should return true for cat' do
-      expect(dictionary.search('cat')).to be
+      expect(dictionary.search('cat')).to eq(['cat'])
     end
 
     it 'should return false for catt' do
-      expect(dictionary.search('catt')).to_not be
+      expect(dictionary.search('catt')).to eq([])
     end
 
     it 'should return false for ca' do
-      expect(dictionary.search('ca')).to_not be
+      expect(dictionary.search('ca')).to eq([])
     end
 
     it 'should return false for caat' do
-      expect(dictionary.search('caat')).to_not be
+      expect(dictionary.search('caat')).to eq([])
     end
   end
 
   describe 'working with a larger dictionary' do
-    let(:small_txt) { File.expand_path('../assets/small.txt',__dir__) }
+    let(:small_txt) { File.expand_path('../../assets/small.txt',__dir__) }
     let(:io) { File.open(small_txt) }
     let(:dictionary) { described_class.new(io) }
 
@@ -60,16 +53,16 @@ describe Rangama::Dictionary do
       expect(dictionary.dict).to include('aardwolves')
     end
 
-    File.open(File.expand_path('../assets/small.txt',__dir__))
+    File.open(File.expand_path('../../assets/small.txt',__dir__))
     .readlines
     .map(&:chomp)
     .each do |word|
-      it "should return true for #{word}" do
-        expect(dictionary.search(word)).to be
+      it "should return a populated array for #{word}" do
+        expect(dictionary.search(word)).to be_any
       end
 
-      it "should return false for modified #{word}" do
-        expect(dictionary.search(modified_word(word))).to_not be
+      it "should return an empty array for modified #{word}" do
+        expect(dictionary.search(modified_word(word))).to_not be_any
       end
     end
   end
@@ -83,7 +76,7 @@ describe Rangama::Dictionary do
     end
 
     it 'should return true for cat' do
-      expect(dictionary.search('cat')).to be
+      expect(dictionary.search('cat')).to be_any
     end
 
     describe 'returning to previously persisted 3 word dictionary' do
@@ -91,12 +84,12 @@ describe Rangama::Dictionary do
 
       it 'should return true for cat' do
         dictionary # instantiate the dictionary.
-        expect(new_dict.search('cat')).to be
+        expect(new_dict.search('cat')).to be_any
       end
 
       it 'should return false for a different dictionary' do
         error_dict = described_class.new(nil,SecureRandom.uuid)
-        expect(error_dict.search('cat')).to_not be
+        expect(error_dict.search('cat')).to_not be_any
       end
     end
   end
