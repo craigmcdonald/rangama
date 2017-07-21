@@ -1,24 +1,21 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## How it works
 
-Things you may want to cover:
+This simple anagram solver uses Redis as a persistence layer for the dictionary used to solve the anagrams. Aside from that it is just a very simple webapp, which makes use of Rails Turbolinks to do everything on a single page.
 
-* Ruby version
+## Dependencies
 
-* System dependencies
+* Redis
+* Node / Yarn / Webpack
 
-* Configuration
+## Set-up
 
-* Database creation
+* Clone the repo
+* `cd <dir> && bundle intall`
+* Start Redis
+* `foreman start`
+* Visit `0.0.0.0:5000`
 
-* Database initialization
+Note that you might need to look at the `rake webpacker` output if there are issues with running it on a fresh install.
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
