@@ -4,7 +4,7 @@ describe '/' do
 
   before { visit '/' }
   subject { page }
-  it { is_expected.to have_selector('#search > label', text: 'Enter a word to search for anagrams:') }
+  it { is_expected.to have_selector('#search > div > label', text: 'Enter a word to search for anagrams:') }
   it { is_expected.to have_button('Go') }
   it { is_expected.to have_field('dictionary', type: 'file') }
   it { is_expected.to have_button('load new dictionary') }

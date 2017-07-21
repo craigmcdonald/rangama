@@ -1,29 +1,34 @@
-<div>
-  <div>
-    <h1>Anagram Finder</h1>
+<div class='row' style='padding-top:100px;'>
+  <div class='col-sm-8'>
+    <div class='col-sm-12'>
+      <%= form_with(method: 'post', url: '/search', id: 'search', class: 'form-inline') do %>
+      <div class="form-group">
+        <%= label_tag(:q, 'Enter a word to search for anagrams:') %>
+        <%= text_field_tag(:q, '', class: 'form-control') %>
+        <%= submit_tag("Go", class: 'btn btn-default') %>
+      </div>
+      <% end %>
+    </div>
+    <div class='col-sm-12' style="padding:15px;">
+    <ul>
+      <% previous_searches.each do |s| %>
+        <li><%= s %></li>
+      <% end %>
+    </ul>
+    <%= link_to 'clear searches', '/clear' %>
+    </div>
   </div>
-  <div>
-    <% if flash[:notice] %>
-      <div class="notice"><%= flash[:notice] %></div>
-    <% end %>
-  </div>
-  <div>
+  <div class='col-sm-4'>
     <%= form_tag({action: :upload}, multipart: true, :remote => true) do %>
-       <%= file_field_tag 'dictionary' %>
-       <%= submit_tag('load new dictionary') %>
+    <div class="form-group">
+      <%= file_field_tag 'dictionary' %>
+    </div>
+    <div class="form-group">
+      <%= submit_tag('load new dictionary', class: 'btn btn-default') %>
+    </div>
+    <% end %>
+    <% if flash[:notice] %>
+      <p class="notice"><%= flash[:notice] %></p>
     <% end %>
   </div>
-  <div>
-    <%= form_with(method: 'post', url: '/search', id: 'search') do %>
-      <%= label_tag(:q, "Enter a word to search for anagrams:") %>
-      <%= text_field_tag(:q) %>
-      <%= submit_tag("Go") %>
-    <% end %>
-  </div>
-  <ul>
-    <% previous_searches.each do |s| %>
-      <li><%= s %></li>
-    <% end %>
-  </ul>
-  <%= link_to 'clear searches', '/clear' %>
 </div>
